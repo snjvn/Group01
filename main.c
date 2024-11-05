@@ -7,10 +7,10 @@
 #include <stdbool.h>
 #include "tm4c123gh6pm.h"
 
-void INIT_TIMER1_REGISTERS(void);
+void INIT_TIMER1_REGISTERS(int);
 void INIT_SYS_CTRL_REGISTERS(void);
 void PWM_INTERRUPT_HANDLER(void);
-int duty = 8;
+//int duty = 8;
 
 int main(void)
 {
@@ -18,12 +18,12 @@ int main(void)
 
     INIT_GPIO_PORTF_REGISTERS();
     int count = 0;
-    while (count < 24){
-        INIT_TIMER1_REGISTERS(8);
-        count ++;
-    }
+
     while(1){
-        ;
+        while (count < 324){
+            INIT_TIMER1_REGISTERS(8);
+            count ++;
+        }
     }
 
 	return 0;
