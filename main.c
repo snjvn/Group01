@@ -18,32 +18,26 @@ int main(void)
 
     INIT_GPIO_PORTF_REGISTERS();
     int count = 0;
-//    INIT_TIMER1_REGISTERS(12);
+    int i;
 
-//    while (count < 384){
-//        INIT_TIMER1_REGISTERS(12);
-//        count ++;
-//    }
-    count = 0;
-    while (count < 384){
-        if ((count > 16) && (count < 24)){
-            INIT_TIMER1_REGISTERS(8);
-        }
-        else{
-            INIT_TIMER1_REGISTERS(12);
-        }
-//        if ((count >= 8) && (count < 16)){
-//            INIT_TIMER1_REGISTERS(12);
-//        }
-//        else{
-//            INIT_TIMER1_REGISTERS(19);
-//        }
-        count ++;
+    int index = 15;
+    const int bitstream_length = 384;
 
-    }
-    TIMER1_CTL_R = 0x00;
     while(1){
-        ;
+        count = 0;
+        while (count < bitstream_length){
+                if ((count >= 8*index) && (count < 8*(index+1))){
+                    INIT_TIMER1_REGISTERS(8);
+                }
+                else{
+                    INIT_TIMER1_REGISTERS(12);
+                }
+
+                count ++;
+
+            }
+
+        for(i = 0; i < 1000; i++){;} // delay
     }
 
 	return 0;
