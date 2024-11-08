@@ -17,25 +17,56 @@ int main(void)
     INIT_SYS_CTRL_REGISTERS(); // init system control registers
 
     INIT_GPIO_PORTF_REGISTERS();
-    int count = 0;
+//    int count = 0;
+//    int i;
+//
+//    int index = 15;
+//    const int bitstream_length = 384;
     int i;
-
-    int index = 15;
-    const int bitstream_length = 384;
+    const int bytestream_length = 48;
+    uint8_t bytestream[48];
+    int byte_index ;
+    int bit_index;
+    uint8_t bitsel = 0x80;
+    for(byte_index = 0; byte_index < bytestream_length; byte_index++){
+        bytestream[byte_index] = 0x00;
+    }
+    bytestream[7] = 0x5F;
+    bytestream[27] = 0x0F;
+    bytestream[2] = 0x77;
+    bytestream[0] = 0x77;
 
     while(1){
-        count = 0;
-        while (count < bitstream_length){
-                if ((count >= 8*index) && (count < 8*(index+1))){
+
+        for(byte_index = 0; byte_index < bytestream_length; byte_index++){
+//            bitsel = 0x01;
+            for(bit_index = 0; bit_index < 8; bit_index++){
+                if( (bytestream[byte_index] << bit_index) & bitsel ){
                     INIT_TIMER1_REGISTERS(8);
                 }
+
                 else{
                     INIT_TIMER1_REGISTERS(12);
                 }
-
-                count ++;
-
             }
+        }
+
+
+
+
+
+//        count = 0;
+//        while (count < bitstream_length){
+//                if ((count >= 8*index) && (count < 8*(index+1))){
+//                    INIT_TIMER1_REGISTERS(8);
+//                }
+//                else{
+//                    INIT_TIMER1_REGISTERS(12);
+//                }
+//
+//                count ++;
+//
+//            }
 
         for(i = 0; i < 1000; i++){;} // delay
     }
