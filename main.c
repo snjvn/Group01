@@ -19,12 +19,18 @@ int main(void)
     INIT_GPIO_PORTF_REGISTERS();
     int count = 0;
 //    INIT_TIMER1_REGISTERS(12);
-    while (count < 192){
-        if (count > 48){
-            INIT_TIMER1_REGISTERS(12);
+
+//    while (count < 384){
+//        INIT_TIMER1_REGISTERS(12);
+//        count ++;
+//    }
+    count = 0;
+    while (count < 384){
+        if ((count > 16) && (count < 24)){
+            INIT_TIMER1_REGISTERS(8);
         }
         else{
-            INIT_TIMER1_REGISTERS(19);
+            INIT_TIMER1_REGISTERS(12);
         }
 //        if ((count >= 8) && (count < 16)){
 //            INIT_TIMER1_REGISTERS(12);
@@ -47,7 +53,7 @@ void INIT_TIMER1_REGISTERS(int duty){
     TIMER1_CTL_R = 0x00; // make sure TIMER1 is disabled before configuring
     NVIC_EN0_R |= 0x00400000; // enabling NVIC for TIMER1B
     TIMER1_CFG_R = 0x04; // configures the timer in 16-bit mode
-    TIMER1_TBMR_R = 0x20A; // configure the timer in periodic timer mode, with PWM mode enabled
+    TIMER1_TBMR_R = 0x209; // configure the timer in periodic timer mode, with PWM mode enabled
     TIMER1_TBILR_R= 20; // the reload value to achieve 1.25us (assuming 16MHz clock)
     TIMER1_TBMATCHR_R = duty; // the compare value for the timer
     TIMER1_IMR_R = 0x800;
