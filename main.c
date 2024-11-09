@@ -51,23 +51,6 @@ int main(void)
             }
         }
 
-
-
-
-
-//        count = 0;
-//        while (count < bitstream_length){
-//                if ((count >= 8*index) && (count < 8*(index+1))){
-//                    INIT_TIMER1_REGISTERS(8);
-//                }
-//                else{
-//                    INIT_TIMER1_REGISTERS(12);
-//                }
-//
-//                count ++;
-//
-//            }
-
         for(i = 0; i < 1000; i++){;} // delay
     }
 
