@@ -12,7 +12,11 @@ void INIT_SYS_CTRL_REGISTERS(void);
 void PWM_INTERRUPT_HANDLER(void);
 void INIT_SYSTICK(void);
 void SYSTICK_ISR();
-int ring_index = 0;
+int green_ring_index = 0;
+int red_ring_index = 1;
+
+float minute_factor = 1.0/60.0;
+float minute_increment_detector = 0.0;
 uint8_t bytestream[48];
 
 int main(void)
@@ -37,7 +41,8 @@ int main(void)
 //    bytestream[7] = 0x5F;
 //    bytestream[27] = 0x0F;
 //    bytestream[2] = 0x77;
-    bytestream[0] = 0xFF;
+    bytestream[green_ring_index] = 0xFF;
+    bytestream[red_ring_index] = 0xFF;
 
     while(1){
 
@@ -107,18 +112,20 @@ void INIT_SYSTICK(){
 }
 
 void SYSTICK_ISR(){
-    bytestream[ring_index] = bytestream[ring_index] -1;
-    bytestream[(ring_index + 3)%48] = bytestream[(ring_index + 3)%48] + 1;
+    minute_increment_detector = minute_increment_detector + minute_factor;
+    bytestream[green_ring_index] = bytestream[green_ring_index] -1;
+    bytestream[(green_ring_index + 3)%48] = bytestream[(green_ring_index + 3)%48] + 1;
 
-//    if (ring_index > 48){
-//        ring_index = 0;
-//    }
-//    if (bytestream[ring_index] < 1){
-//        bytestream[ring_index] = 1;
-//
-//    }
-    if (bytestream[(ring_index + 3)%48] > 254){
-//        bytestream[(ring_index + 3)%48] = 254;
-        ring_index = (ring_index + 3)%48;
+    if (minute_increment_detector >= 1.0){
+        bytestream[red_ring_index] = bytestream[red_ring_index] -1;
+        bytestream[(red_ring_index + 3)%48] = bytestream[(red_ring_index + 3)%48] + 1;
+        minute_increment_detector = 0.0;
     }
+
+    if (bytestream[(green_ring_index + 3)%48] > 254){
+        green_ring_index = (green_ring_index + 3)%48;
+    }
+    if (bytestream[(red_ring_index + 3)%48] > 254){
+        red_ring_index = (red_ring_index + 3)%48;
+        }
 }
