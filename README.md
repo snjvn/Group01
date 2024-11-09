@@ -8,6 +8,8 @@ Time is displayed on a ring of 16 LEDs, in a way similar to an analog wall clock
 
 ![Alt text](embedded1.png?raw=true "Title") 
 
+![Alt text](embedded2.png?raw=true "Title") 
+
 ### Communicating with the LED Rings
 
 - The LEDs on the ring are WS2812B LEDs.
