@@ -6,7 +6,6 @@ Time is displayed on a ring of 16 LEDs, in a way similar to an analog wall clock
 
 ### Related Diagrams
 
-![Alt text](embedded1.png?raw=true "Title") 
 
 ![Alt text](embedded2.png?raw=true "Title") 
 
