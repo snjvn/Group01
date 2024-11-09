@@ -1,10 +1,13 @@
-### Analog Display of a Digital Clock on an LED Ring
+### Analog Clock: Product Specification
 
-The LED Ring is made of 16 equally-spaced RGB LEDs. The objective is to display time (Hrs, Mins, Secs) on this ring in a way similar to an analog wall clock.
+Time is displayed on a ring of 16 LEDs, in a way similar to an analog wall clock. User may set the time using a UART interface.
 
 - Red light would indicate the position of the Hour hand. similarly, Blue and Green would indicate the presence of Minutes and Seconds hands of the clock.
-- Features like manual setting of time could be implemented.
- 
+
+### Related Diagrams
+
+![Alt text](embedded1.png?raw=true "Title") 
+
 ### Communicating with the LED Rings
 
 - The LEDs on the ring are WS2812B LEDs.
