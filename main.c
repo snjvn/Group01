@@ -10,12 +10,15 @@
 void INIT_TIMER1_REGISTERS(int);
 void INIT_SYS_CTRL_REGISTERS(void);
 void PWM_INTERRUPT_HANDLER(void);
-//int duty = 8;
+void INIT_SYSTICK(void);
+void SYSTICK_ISR();
+int ring_index = 0;
+uint8_t bytestream[48];
 
 int main(void)
 {
     INIT_SYS_CTRL_REGISTERS(); // init system control registers
-
+    INIT_SYSTICK();
     INIT_GPIO_PORTF_REGISTERS();
 //    int count = 0;
 //    int i;
@@ -24,17 +27,17 @@ int main(void)
 //    const int bitstream_length = 384;
     int i;
     const int bytestream_length = 48;
-    uint8_t bytestream[48];
+
     int byte_index ;
     int bit_index;
     uint8_t bitsel = 0x80;
     for(byte_index = 0; byte_index < bytestream_length; byte_index++){
         bytestream[byte_index] = 0x00;
     }
-    bytestream[7] = 0x5F;
-    bytestream[27] = 0x0F;
-    bytestream[2] = 0x77;
-    bytestream[0] = 0x77;
+//    bytestream[7] = 0x5F;
+//    bytestream[27] = 0x0F;
+//    bytestream[2] = 0x77;
+    bytestream[0] = 0xFF;
 
     while(1){
 
@@ -94,4 +97,27 @@ void PWM_INTERRUPT_HANDLER(){
     TIMER1_CTL_R = 0x00;
     TIMER1_ICR_R = 0x800;
     GPIO_PORTF_DATA_R |= 0x02;
+}
+
+void INIT_SYSTICK(){
+    NVIC_ST_RELOAD_R = 16000*10; // 10 ms
+    NVIC_ST_CURRENT_R = 0x00;
+    NVIC_ST_CTRL_R = 0x00000007;
+}
+
+void SYSTICK_ISR(){
+    bytestream[ring_index] = bytestream[ring_index] -1;
+    bytestream[(ring_index + 3)%48] = bytestream[(ring_index + 3)%48] + 1;
+
+//    if (ring_index > 48){
+//        ring_index = 0;
+//    }
+//    if (bytestream[ring_index] < 1){
+//        bytestream[ring_index] = 1;
+//
+//    }
+    if (bytestream[(ring_index + 3)%48] > 254){
+//        bytestream[(ring_index + 3)%48] = 254;
+        ring_index = (ring_index + 3)%48;
+    }
 }
