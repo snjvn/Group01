@@ -8,10 +8,10 @@
 #include "tm4c123gh6pm.h"
 
 #define CLOCK_RUN 0
-#define CLOCK_SET 1
-//#define CLOCK_SET_MIN 2
-//#define CLOCK_SET_HR 3
-#define CLOCK_PAUSE 2
+#define CLOCK_SET_SEC 1
+#define CLOCK_SET_MIN 2
+#define CLOCK_SET_HR 3
+#define CLOCK_PAUSE 4
 
 
 void INIT_TIMER1_REGISTERS(int);
@@ -135,35 +135,37 @@ void GPIO_ISR(){
     case CLOCK_RUN:
         if (GPIO_PORTF_DATA_R & 0x01){
             GPIO_PORTF_DATA_R ^= 0x02;
-            state = CLOCK_SET;
+            state = CLOCK_SET_HR;
+            GPIO_PORTF_ICR_R = 0x01;
+            NVIC_ST_RELOAD_R = 500;
+        }
+        break;
+    case CLOCK_SET_HR:
+        if (GPIO_PORTF_DATA_R & 0x01){
+//            GPIO_PORTF_DATA_R ^= 0x04;
+            state = CLOCK_MIN;
             GPIO_PORTF_ICR_R = 0x01;
             NVIC_ST_RELOAD_R = 1000;
         }
         break;
-    case CLOCK_SET:
+
+
+    case CLOCK_SET_MIN:
         if (GPIO_PORTF_DATA_R & 0x01){
-//            GPIO_PORTF_DATA_R ^= 0x04;
+//            GPIO_PORTF_DATA_R ^= 0x02;
+            state = CLOCK_SET_SEC;
+            GPIO_PORTF_ICR_R = 0x01;
+            NVIC_ST_RELOAD_R = 2500;
+        }
+        break;
+
+    case CLOCK_SET_SEC:
+        if (GPIO_PORTF_DATA_R & 0x01){
+            GPIO_PORTF_DATA_R ^= 0x04;
             state = CLOCK_PAUSE;
             GPIO_PORTF_ICR_R = 0x01;
         }
         break;
-
-
-//    case CLOCK_SET_MIN:
-//        if (GPIO_PORTF_DATA_R & 0x01){
-////            GPIO_PORTF_DATA_R ^= 0x02;
-//            state = CLOCK_SET_HR;
-//            GPIO_PORTF_ICR_R = 0x01;
-//        }
-//        break;
-//
-//    case CLOCK_SET_HR:
-//        if (GPIO_PORTF_DATA_R & 0x01){
-//            GPIO_PORTF_DATA_R ^= 0x04;
-//            state = CLOCK_PAUSE;
-//            GPIO_PORTF_ICR_R = 0x01;
-//        }
-//        break;
     case CLOCK_PAUSE:
         if (GPIO_PORTF_DATA_R & 0x01){
             GPIO_PORTF_DATA_R ^= 0x04;
