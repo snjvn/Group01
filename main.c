@@ -8,10 +8,10 @@
 #include "tm4c123gh6pm.h"
 
 #define CLOCK_RUN 0
-#define CLOCK_SET_SEC 1
-#define CLOCK_SET_MIN 2
-#define CLOCK_SET_HR 3
-#define CLOCK_PAUSE 4
+#define CLOCK_SET 1
+//#define CLOCK_SET_MIN 2
+//#define CLOCK_SET_HR 3
+#define CLOCK_PAUSE 2
 
 
 void INIT_TIMER1_REGISTERS(int);
@@ -112,7 +112,7 @@ void PWM_INTERRUPT_HANDLER(){
 
 void INIT_SYSTICK(){
 //    NVIC_ST_RELOAD_R = 16000*10; // 10 ms
-    NVIC_ST_RELOAD_R = 1000; // actual value : 235294.1176
+    NVIC_ST_RELOAD_R = 235294; // actual value : 235294.1176
     NVIC_ST_CURRENT_R = 0x00;
     NVIC_ST_CTRL_R = 0x00000007;
 }
@@ -135,46 +135,48 @@ void GPIO_ISR(){
     case CLOCK_RUN:
         if (GPIO_PORTF_DATA_R & 0x01){
             GPIO_PORTF_DATA_R ^= 0x02;
-            state = CLOCK_SET_SEC;
+            state = CLOCK_SET;
             GPIO_PORTF_ICR_R = 0x01;
+            NVIC_ST_RELOAD_R = 1000;
         }
         break;
-    case CLOCK_SET_SEC:
+    case CLOCK_SET:
         if (GPIO_PORTF_DATA_R & 0x01){
 //            GPIO_PORTF_DATA_R ^= 0x04;
-            state = CLOCK_SET_MIN;
-            GPIO_PORTF_ICR_R = 0x01;
-        }
-        break;
-
-
-    case CLOCK_SET_MIN:
-        if (GPIO_PORTF_DATA_R & 0x01){
-//            GPIO_PORTF_DATA_R ^= 0x02;
-            state = CLOCK_SET_HR;
-            GPIO_PORTF_ICR_R = 0x01;
-        }
-        break;
-
-    case CLOCK_SET_HR:
-        if (GPIO_PORTF_DATA_R & 0x01){
-            GPIO_PORTF_DATA_R ^= 0x04;
             state = CLOCK_PAUSE;
             GPIO_PORTF_ICR_R = 0x01;
         }
         break;
+
+
+//    case CLOCK_SET_MIN:
+//        if (GPIO_PORTF_DATA_R & 0x01){
+////            GPIO_PORTF_DATA_R ^= 0x02;
+//            state = CLOCK_SET_HR;
+//            GPIO_PORTF_ICR_R = 0x01;
+//        }
+//        break;
+//
+//    case CLOCK_SET_HR:
+//        if (GPIO_PORTF_DATA_R & 0x01){
+//            GPIO_PORTF_DATA_R ^= 0x04;
+//            state = CLOCK_PAUSE;
+//            GPIO_PORTF_ICR_R = 0x01;
+//        }
+//        break;
     case CLOCK_PAUSE:
         if (GPIO_PORTF_DATA_R & 0x01){
             GPIO_PORTF_DATA_R ^= 0x04;
             state = CLOCK_RUN;
             GPIO_PORTF_ICR_R = 0x01;
+            NVIC_ST_RELOAD_R = 235294;
         }
         break;
     }
 }
 
 void SYSTICK_ISR(){
-    if (state == CLOCK_RUN){
+    if (state != CLOCK_PAUSE){
         minute_increment_detector = minute_increment_detector + minute_factor;
         hour_increment_detector = hour_increment_detector + hour_factor;
         bytestream[green_ring_index] = bytestream[green_ring_index] -1;
@@ -202,48 +204,48 @@ void SYSTICK_ISR(){
         }
     }
 
-    else if (state == CLOCK_SET_SEC){
-        if (!(GPIO_PORTF_DATA_R & 0x10)){
-            minute_increment_detector = minute_increment_detector + minute_factor;
-            if (minute_increment_detector >= 1.0){
-                bytestream[green_ring_index] = bytestream[green_ring_index] -1;
-                bytestream[(green_ring_index + 3)%48] = bytestream[(green_ring_index + 3)%48] + 1;
-                minute_increment_detector = 0.0;
-            }
-
-            if (bytestream[(green_ring_index + 3)%48] > 254){
-                green_ring_index = (green_ring_index + 3)%48;
-            }
-        }
-    }
-
-    else if (state == CLOCK_SET_MIN){
-        if (!(GPIO_PORTF_DATA_R & 0x10)){
-            minute_increment_detector = minute_increment_detector + minute_factor;
-            if (minute_increment_detector >= 1.0){
-                bytestream[red_ring_index] = bytestream[red_ring_index] -1;
-                bytestream[(red_ring_index + 3)%48] = bytestream[(red_ring_index + 3)%48] + 1;
-                minute_increment_detector = 0.0;
-            }
-
-            if (bytestream[(red_ring_index + 3)%48] > 254){
-                red_ring_index = (red_ring_index + 3)%48;
-            }
-        }
-    }
-
-    else if (state == CLOCK_SET_HR){
-        if (!(GPIO_PORTF_DATA_R & 0x10)){
-            minute_increment_detector = minute_increment_detector + minute_factor;
-            if (minute_increment_detector >= 1.0){
-                bytestream[blue_ring_index] = bytestream[blue_ring_index] -1;
-                bytestream[(blue_ring_index + 3)%48] = bytestream[(blue_ring_index + 3)%48] + 1;
-                minute_increment_detector = 0.0;
-            }
-
-            if (bytestream[(blue_ring_index + 3)%48] > 254){
-                blue_ring_index = (blue_ring_index + 3)%48;
-            }
-        }
-    }
+//    else if (state == CLOCK_SET_SEC){
+//        if (!(GPIO_PORTF_DATA_R & 0x10)){
+//            minute_increment_detector = minute_increment_detector + minute_factor;
+//            if (minute_increment_detector >= 1.0){
+//                bytestream[green_ring_index] = bytestream[green_ring_index] -1;
+//                bytestream[(green_ring_index + 3)%48] = bytestream[(green_ring_index + 3)%48] + 1;
+//                minute_increment_detector = 0.0;
+//            }
+//
+//            if (bytestream[(green_ring_index + 3)%48] > 254){
+//                green_ring_index = (green_ring_index + 3)%48;
+//            }
+//        }
+//    }
+//
+//    else if (state == CLOCK_SET_MIN){
+//        if (!(GPIO_PORTF_DATA_R & 0x10)){
+//            minute_increment_detector = minute_increment_detector + minute_factor;
+//            if (minute_increment_detector >= 1.0){
+//                bytestream[red_ring_index] = bytestream[red_ring_index] -1;
+//                bytestream[(red_ring_index + 3)%48] = bytestream[(red_ring_index + 3)%48] + 1;
+//                minute_increment_detector = 0.0;
+//            }
+//
+//            if (bytestream[(red_ring_index + 3)%48] > 254){
+//                red_ring_index = (red_ring_index + 3)%48;
+//            }
+//        }
+//    }
+//
+//    else if (state == CLOCK_SET_HR){
+//        if (!(GPIO_PORTF_DATA_R & 0x10)){
+//            minute_increment_detector = minute_increment_detector + minute_factor;
+//            if (minute_increment_detector >= 1.0){
+//                bytestream[blue_ring_index] = bytestream[blue_ring_index] -1;
+//                bytestream[(blue_ring_index + 3)%48] = bytestream[(blue_ring_index + 3)%48] + 1;
+//                minute_increment_detector = 0.0;
+//            }
+//
+//            if (bytestream[(blue_ring_index + 3)%48] > 254){
+//                blue_ring_index = (blue_ring_index + 3)%48;
+//            }
+//        }
+//    }
 }
