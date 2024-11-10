@@ -14,9 +14,12 @@ void INIT_SYSTICK(void);
 void SYSTICK_ISR();
 int green_ring_index = 0;
 int red_ring_index = 1;
+int blue_ring_index = 2;
 
 float minute_factor = 1.0/60.0;
 float minute_increment_detector = 0.0;
+float hour_factor = 1.0/720.0;
+float hour_increment_detector = 0.0;
 uint8_t bytestream[48];
 
 int main(void)
@@ -24,11 +27,7 @@ int main(void)
     INIT_SYS_CTRL_REGISTERS(); // init system control registers
     INIT_SYSTICK();
     INIT_GPIO_PORTF_REGISTERS();
-//    int count = 0;
-//    int i;
-//
-//    int index = 15;
-//    const int bitstream_length = 384;
+
     int i;
     const int bytestream_length = 48;
 
@@ -38,12 +37,10 @@ int main(void)
     for(byte_index = 0; byte_index < bytestream_length; byte_index++){
         bytestream[byte_index] = 0x00;
     }
-//    bytestream[7] = 0x5F;
-//    bytestream[27] = 0x0F;
-//    bytestream[2] = 0x77;
+
     bytestream[green_ring_index] = 0xFF;
     bytestream[red_ring_index] = 0xFF;
-
+    bytestream[blue_ring_index] = 0xFF;
     while(1){
 
         for(byte_index = 0; byte_index < bytestream_length; byte_index++){
@@ -106,13 +103,14 @@ void PWM_INTERRUPT_HANDLER(){
 
 void INIT_SYSTICK(){
 //    NVIC_ST_RELOAD_R = 16000*10; // 10 ms
-    NVIC_ST_RELOAD_R = 235294; // actual value : 235294.1176
+    NVIC_ST_RELOAD_R = 1000; // actual value : 235294.1176
     NVIC_ST_CURRENT_R = 0x00;
     NVIC_ST_CTRL_R = 0x00000007;
 }
 
 void SYSTICK_ISR(){
     minute_increment_detector = minute_increment_detector + minute_factor;
+    hour_increment_detector = hour_increment_detector + hour_factor;
     bytestream[green_ring_index] = bytestream[green_ring_index] -1;
     bytestream[(green_ring_index + 3)%48] = bytestream[(green_ring_index + 3)%48] + 1;
 
@@ -122,10 +120,19 @@ void SYSTICK_ISR(){
         minute_increment_detector = 0.0;
     }
 
+    if (hour_increment_detector >= 1.0){
+        bytestream[blue_ring_index] = bytestream[blue_ring_index] -1;
+        bytestream[(blue_ring_index + 3)%48] = bytestream[(blue_ring_index + 3)%48] + 1;
+        hour_increment_detector = 0.0;
+    }
+
     if (bytestream[(green_ring_index + 3)%48] > 254){
         green_ring_index = (green_ring_index + 3)%48;
     }
     if (bytestream[(red_ring_index + 3)%48] > 254){
         red_ring_index = (red_ring_index + 3)%48;
-        }
+    }
+    if (bytestream[(blue_ring_index + 3)%48] > 254){
+        blue_ring_index = (blue_ring_index + 3)%48;
+    }
 }
