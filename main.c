@@ -137,13 +137,13 @@ void GPIO_ISR(){
             GPIO_PORTF_DATA_R ^= 0x02;
             state = CLOCK_SET_HR;
             GPIO_PORTF_ICR_R = 0x01;
-            NVIC_ST_RELOAD_R = 500;
+            NVIC_ST_RELOAD_R = 250;
         }
         break;
     case CLOCK_SET_HR:
         if (GPIO_PORTF_DATA_R & 0x01){
 //            GPIO_PORTF_DATA_R ^= 0x04;
-            state = CLOCK_MIN;
+            state = CLOCK_SET_MIN;
             GPIO_PORTF_ICR_R = 0x01;
             NVIC_ST_RELOAD_R = 1000;
         }
