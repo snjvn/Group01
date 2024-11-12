@@ -32,6 +32,8 @@ float hour_factor = 1.0/720.0;
 float hour_increment_detector = 0.0;
 uint8_t bytestream[48];
 
+int update = 0;
+
 int main(void)
 {
     INIT_SYS_CTRL_REGISTERS(); // init system control registers
@@ -52,20 +54,21 @@ int main(void)
     bytestream[red_ring_index] = 0xFF;
     bytestream[blue_ring_index] = 0xFF;
     while(1){
+        if (update == 1){
+            for(byte_index = 0; byte_index < bytestream_length; byte_index++){
+                for(bit_index = 0; bit_index < 8; bit_index++){
+                    if( (bytestream[byte_index] << bit_index) & bitsel ){
+                        INIT_TIMER1_REGISTERS(8);
+                    }
 
-        for(byte_index = 0; byte_index < bytestream_length; byte_index++){
-            for(bit_index = 0; bit_index < 8; bit_index++){
-                if( (bytestream[byte_index] << bit_index) & bitsel ){
-                    INIT_TIMER1_REGISTERS(8);
-                }
-
-                else{
-                    INIT_TIMER1_REGISTERS(12);
+                    else{
+                        INIT_TIMER1_REGISTERS(12);
+                    }
                 }
             }
+            update = 0;
         }
-
-        for(i = 0; i < 1000; i++){;} // delay
+//        for(i = 0; i < 1000; i++){;} // delay
     }
 
 	return 0;
@@ -112,7 +115,7 @@ void PWM_INTERRUPT_HANDLER(){
 
 void INIT_SYSTICK(){
 //    NVIC_ST_RELOAD_R = 16000*10; // 10 ms
-    NVIC_ST_RELOAD_R = 235294; // actual value : 235294.1176
+    NVIC_ST_RELOAD_R = 234375; // actual value : 234375
     NVIC_ST_CURRENT_R = 0x00;
     NVIC_ST_CTRL_R = 0x00000007;
 }
@@ -171,7 +174,7 @@ void GPIO_ISR(){
             GPIO_PORTF_DATA_R ^= 0x04;
             state = CLOCK_RUN;
             GPIO_PORTF_ICR_R = 0x01;
-            NVIC_ST_RELOAD_R = 235294;
+            NVIC_ST_RELOAD_R = 234375;
         }
         break;
     }
@@ -204,6 +207,7 @@ void SYSTICK_ISR(){
         if (bytestream[(blue_ring_index + 3)%48] > 254){
             blue_ring_index = (blue_ring_index + 3)%48;
         }
+        update = 1;
     }
 
 //    else if (state == CLOCK_SET_SEC){
