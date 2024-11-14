@@ -68,7 +68,7 @@ int main(void)
             }
             update = 0;
         }
-        if ( (state == CLOCK_SET_HR) || (state == CLOCK_SET_MIN) ){
+        if ( state != CLOCK_RUN){
             for(i = 0; i < 1000; i++){;} // delay
         }
     }
