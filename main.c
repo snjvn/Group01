@@ -33,7 +33,9 @@ float hour_increment_detector = 0.0;
 uint8_t bytestream[48];
 
 int update = 0;
-
+int hours = 0;
+int mins = 0;
+int Systick_Ticks = 0;
 int main(void)
 {
     INIT_SYS_CTRL_REGISTERS(); // init system control registers
@@ -210,6 +212,15 @@ void SYSTICK_ISR(){
             blue_ring_index = (blue_ring_index + 3)%48;
         }
         update = 1;
+        Systick_Ticks = Systick_Ticks + 1;
+        if (Systick_Ticks == 4096){
+            mins = mins + 1;
+            Systick_Ticks = 0;
+        }
+        if (mins == 60){
+            hrs += 1;
+            mins = 0;
+        }
     }
 
 //    else if (state == CLOCK_SET_SEC){
