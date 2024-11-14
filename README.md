@@ -1,6 +1,6 @@
 ### Analog Clock: Product Specification
 
-Time is displayed on a ring of 16 LEDs, in a way similar to an analog wall clock. User may set the time using a UART interface.
+Time is displayed on a ring of 16 LEDs, in a way similar to an analog wall clock. User may set the time using SW2.
 
 - Red light would indicate the position of the Hour hand. similarly, Blue and Green would indicate the presence of Minutes and Seconds hands of the clock.
 
