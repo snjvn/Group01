@@ -68,7 +68,9 @@ int main(void)
             }
             update = 0;
         }
-//        for(i = 0; i < 1000; i++){;} // delay
+        if ( (state == CLOCK_SET_HR) || (state == CLOCK_SET_MIN) ){
+            for(i = 0; i < 1000; i++){;} // delay
+        }
     }
 
 	return 0;
