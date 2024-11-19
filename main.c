@@ -59,7 +59,29 @@ int main(void)
         if (update == 1){
             for(byte_index = 0; byte_index < bytestream_length; byte_index++){
                 for(bit_index = 0; bit_index < 8; bit_index++){
+                    if (state == CLOCK_SET_SEC){
+                        if ((byte_index%3) != 0){
+                            INIT_TIMER1_REGISTERS(12);
+                            continue;
+                        }
+                    }
+                    else if (state == CLOCK_SET_MIN){
+                        if ((byte_index%2) != 0){
+                            INIT_TIMER1_REGISTERS(12);
+                            continue;
+                        }
+                    }
+                    else if (state == CLOCK_SET_HR){
+                        if ((byte_index%1) != 0){
+                            INIT_TIMER1_REGISTERS(12);
+                            continue;
+                        }
+                    }
+                    else if (state == CLOCK_PAUSE){
+                        continue;
+                    }
                     if( (bytestream[byte_index] << bit_index) & bitsel ){
+
                         INIT_TIMER1_REGISTERS(8);
                     }
 
@@ -206,7 +228,7 @@ void SYSTICK_ISR(){
             Systick_Ticks = 0;
         }
         if (mins == 60){
-            hrs += 1;
+            hours += 1;
             mins = 0;
         }
     }
