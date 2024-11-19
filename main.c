@@ -125,18 +125,6 @@ void INIT_SYSTICK(){
 }
 
 void GPIO_ISR(){
-//
-//    if ( (state == CLOCK_RUN) && !(GPIO_PORTF_DATA_R & 0x01) ){
-//        GPIO_PORTF_DATA_R ^= 0x02;
-//        state = CLOCK_SET;
-//        GPIO_PORTF_ICR_R = 0x11;
-//
-//    }
-//    else if ((state == CLOCK_SET) && !(GPIO_PORTF_DATA_R & 0x01)){
-////        state = CLOCK_RUN;
-//        GPIO_PORTF_DATA_R ^= 0x04;
-//        GPIO_PORTF_ICR_R = 0x11;
-//    }
 
     switch (state){
     case CLOCK_RUN:
@@ -192,24 +180,24 @@ void SYSTICK_ISR(){
         bytestream[(green_ring_index + 3)%48] = bytestream[(green_ring_index + 3)%48] + 1;
 
         if (minute_increment_detector >= 1.0){
-            bytestream[red_ring_index] = bytestream[red_ring_index] -1;
-            bytestream[(red_ring_index + 3)%48] = bytestream[(red_ring_index + 3)%48] + 1;
+            bytestream[blue_ring_index] = bytestream[blue_ring_index] -1;
+            bytestream[(blue_ring_index + 3)%48] = bytestream[(blue_ring_index + 3)%48] + 1;
             minute_increment_detector = 0.0;
         }
         if (hour_increment_detector >= 1.0){
-            bytestream[blue_ring_index] = bytestream[blue_ring_index] -1;
-            bytestream[(blue_ring_index + 3)%48] = bytestream[(blue_ring_index + 3)%48] + 1;
+            bytestream[red_ring_index] = bytestream[red_ring_index] -1;
+            bytestream[(red_ring_index + 3)%48] = bytestream[(red_ring_index + 3)%48] + 1;
             hour_increment_detector = 0.0;
         }
 
         if (bytestream[(green_ring_index + 3)%48] > 254){
             green_ring_index = (green_ring_index + 3)%48;
         }
-        if (bytestream[(red_ring_index + 3)%48] > 254){
-            red_ring_index = (red_ring_index + 3)%48;
-        }
         if (bytestream[(blue_ring_index + 3)%48] > 254){
             blue_ring_index = (blue_ring_index + 3)%48;
+        }
+        if (bytestream[(red_ring_index + 3)%48] > 254){
+            red_ring_index = (red_ring_index + 3)%48;
         }
         update = 1;
         Systick_Ticks = Systick_Ticks + 1;
@@ -223,48 +211,5 @@ void SYSTICK_ISR(){
         }
     }
 
-//    else if (state == CLOCK_SET_SEC){
-//        if (!(GPIO_PORTF_DATA_R & 0x10)){
-//            minute_increment_detector = minute_increment_detector + minute_factor;
-//            if (minute_increment_detector >= 1.0){
-//                bytestream[green_ring_index] = bytestream[green_ring_index] -1;
-//                bytestream[(green_ring_index + 3)%48] = bytestream[(green_ring_index + 3)%48] + 1;
-//                minute_increment_detector = 0.0;
-//            }
-//
-//            if (bytestream[(green_ring_index + 3)%48] > 254){
-//                green_ring_index = (green_ring_index + 3)%48;
-//            }
-//        }
-//    }
-//
-//    else if (state == CLOCK_SET_MIN){
-//        if (!(GPIO_PORTF_DATA_R & 0x10)){
-//            minute_increment_detector = minute_increment_detector + minute_factor;
-//            if (minute_increment_detector >= 1.0){
-//                bytestream[red_ring_index] = bytestream[red_ring_index] -1;
-//                bytestream[(red_ring_index + 3)%48] = bytestream[(red_ring_index + 3)%48] + 1;
-//                minute_increment_detector = 0.0;
-//            }
-//
-//            if (bytestream[(red_ring_index + 3)%48] > 254){
-//                red_ring_index = (red_ring_index + 3)%48;
-//            }
-//        }
-//    }
-//
-//    else if (state == CLOCK_SET_HR){
-//        if (!(GPIO_PORTF_DATA_R & 0x10)){
-//            minute_increment_detector = minute_increment_detector + minute_factor;
-//            if (minute_increment_detector >= 1.0){
-//                bytestream[blue_ring_index] = bytestream[blue_ring_index] -1;
-//                bytestream[(blue_ring_index + 3)%48] = bytestream[(blue_ring_index + 3)%48] + 1;
-//                minute_increment_detector = 0.0;
-//            }
-//
-//            if (bytestream[(blue_ring_index + 3)%48] > 254){
-//                blue_ring_index = (blue_ring_index + 3)%48;
-//            }
-//        }
-//    }
+
 }
