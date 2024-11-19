@@ -59,55 +59,56 @@ int main(void)
         if (update == 1){
             for(byte_index = 0; byte_index < bytestream_length; byte_index++){
                 for(bit_index = 0; bit_index < 8; bit_index++){
-//                    if (state == CLOCK_SET_SEC){
-//                        if ((byte_index%3) != 0){
-//                            INIT_TIMER1_REGISTERS(12);
-//                            continue;
-//                        }
-//                    }
-//                    else if (state == CLOCK_SET_MIN){
-//                        if ((byte_index%2) != 0){
-//                            INIT_TIMER1_REGISTERS(12);
-//                            continue;
-//                        }
-//                    }
-//                    else if (state == CLOCK_SET_HR){
-//                        if ((byte_index%1) != 0){
-//                            INIT_TIMER1_REGISTERS(12);
-//                            continue;
-//                        }
-//                    }
+                    if (state == CLOCK_SET_SEC){
+                        if ((byte_index%3) != 0){
+                            INIT_TIMER1_REGISTERS(12);
+                            continue;
+                        }
+                    }
+                    else if (state == CLOCK_SET_MIN){
+                        if ((byte_index%3) != 2){
+                            INIT_TIMER1_REGISTERS(12);
+                            continue;
+                        }
+                    }
+                    else if (state == CLOCK_SET_HR){
+                        if ((byte_index%3) != 1){
+                            INIT_TIMER1_REGISTERS(12);
+                            continue;
+                        }
+                    }
 //                    else if (state == CLOCK_PAUSE){
 //                        continue;
 //                    }
                     if( (bytestream[byte_index] << bit_index) & bitsel ){
-                        if(state == CLOCK_RUN){
-                            INIT_TIMER1_REGISTERS(8);
-                        }
-                        else if(state == CLOCK_SET_HR){
-                            if ((byte_index%3) == 1){
-                                INIT_TIMER1_REGISTERS(8);
-                            }
-                            else{
-                                INIT_TIMER1_REGISTERS(12);
-                            }
-                        }
-                        else if(state == CLOCK_SET_MIN){
-                            if ((byte_index%3) == 2){
-                                INIT_TIMER1_REGISTERS(8);
-                            }
-                            else{
-                                INIT_TIMER1_REGISTERS(12);
-                            }
-                        }
-                        else if(state == CLOCK_SET_SEC){
-                            if ((byte_index%3) == 0){
-                                INIT_TIMER1_REGISTERS(8);
-                            }
-                            else{
-                                INIT_TIMER1_REGISTERS(12);
-                            }
-                        }
+                        INIT_TIMER1_REGISTERS(8);
+//                        if(state == CLOCK_RUN){
+//                            INIT_TIMER1_REGISTERS(8);
+//                        }
+//                        else if(state == CLOCK_SET_HR){
+//                            if ((byte_index%3) == 1){
+//                                INIT_TIMER1_REGISTERS(8);
+//                            }
+//                            else{
+//                                INIT_TIMER1_REGISTERS(12);
+//                            }
+//                        }
+//                        else if(state == CLOCK_SET_MIN){
+//                            if ((byte_index%3) == 2){
+//                                INIT_TIMER1_REGISTERS(8);
+//                            }
+//                            else{
+//                                INIT_TIMER1_REGISTERS(12);
+//                            }
+//                        }
+//                        else if(state == CLOCK_SET_SEC){
+//                            if ((byte_index%3) == 0){
+//                                INIT_TIMER1_REGISTERS(8);
+//                            }
+//                            else{
+//                                INIT_TIMER1_REGISTERS(12);
+//                            }
+//                        }
                     }
 
                     else{
