@@ -210,13 +210,13 @@ void SYSTICK_ISR(){
             hour_increment_detector = 0.0;
         }
 
-        if (bytestream[(green_ring_index + 3)%48] > 254){
+        if (bytestream[(green_ring_index + 3)%48] >= 255){
             green_ring_index = (green_ring_index + 3)%48;
         }
-        if (bytestream[(blue_ring_index + 3)%48] > 254){
+        if (bytestream[(blue_ring_index + 3)%48] >= 255){
             blue_ring_index = (blue_ring_index + 3)%48;
         }
-        if (bytestream[(red_ring_index + 3)%48] > 254){
+        if (bytestream[(red_ring_index + 3)%48] >= 255){
             red_ring_index = (red_ring_index + 3)%48;
         }
         update = 1;
