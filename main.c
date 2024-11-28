@@ -49,7 +49,7 @@ int main(void)
     int bit_index;
     uint8_t bitsel = 0x80;
     for(byte_index = 0; byte_index < bytestream_length; byte_index++){
-        bytestream[byte_index] = 0x00;
+        bytestream[byte_index] = 0x08;
     }
 
     bytestream[green_ring_index] = 0xFF;
@@ -77,38 +77,10 @@ int main(void)
                             continue;
                         }
                     }
-//                    else if (state == CLOCK_PAUSE){
-//                        continue;
-//                    }
+
                     if( (bytestream[byte_index] << bit_index) & bitsel ){
                         INIT_TIMER1_REGISTERS(8);
-//                        if(state == CLOCK_RUN){
-//                            INIT_TIMER1_REGISTERS(8);
-//                        }
-//                        else if(state == CLOCK_SET_HR){
-//                            if ((byte_index%3) == 1){
-//                                INIT_TIMER1_REGISTERS(8);
-//                            }
-//                            else{
-//                                INIT_TIMER1_REGISTERS(12);
-//                            }
-//                        }
-//                        else if(state == CLOCK_SET_MIN){
-//                            if ((byte_index%3) == 2){
-//                                INIT_TIMER1_REGISTERS(8);
-//                            }
-//                            else{
-//                                INIT_TIMER1_REGISTERS(12);
-//                            }
-//                        }
-//                        else if(state == CLOCK_SET_SEC){
-//                            if ((byte_index%3) == 0){
-//                                INIT_TIMER1_REGISTERS(8);
-//                            }
-//                            else{
-//                                INIT_TIMER1_REGISTERS(12);
-//                            }
-//                        }
+
                     }
 
                     else{
