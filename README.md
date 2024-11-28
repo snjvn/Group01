@@ -7,8 +7,10 @@ Time is displayed on a ring of 16 LEDs, in a way similar to an analog wall clock
 ### Related Diagrams
 
 
-![Alt text](images/embedded1.png?raw=true "Title") 
-![Alt text](images/embedded3.png?raw=true "Title") 
+![Alt text](images/Circuit_Diagram.png?raw=true "Circuit") 
+![Alt text](images/embedded3.png?raw=true "Flowchart")
+![Alt text](images/State_Diagram.png?raw=true "State_Diagram") 
+ 
 
 ### Communicating with the LED Rings
 
