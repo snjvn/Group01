@@ -79,7 +79,7 @@ int main(void)
                     }
 
                     if( (bytestream[byte_index] << bit_index) & bitsel ){
-                        INIT_TIMER1_REGISTERS(8);
+                        INIT_TIMER1_REGISTERS(8);//
 
                     }
 
@@ -91,7 +91,7 @@ int main(void)
             update = 0;
         }
         if ( state != CLOCK_RUN){
-            for(i = 0; i < 1000; i++){;} // delay
+            for(i = 0; i < 50000; i++){;} // delay
         }
     }
 
